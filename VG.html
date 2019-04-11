@@ -1,0 +1,38 @@
+
+<!-- saved from url=(0048)http://www.image.ucar.edu/Data/MJProject/VG.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"></head><body><h4> Some details fitting the variogram from the DEM data</h4>
+
+<pre># some simple least squares fits to the variogram to get an estimate of
+# process variance (rho) and the nugget.  The nugget is essentially zero
+# so using lambda=0 i.e. interpolation would be definsible
+
+# only fit to variogram close to zero.
+
+vgram.matrix( zR, R= 65, dx=dx, dy=dy) -&gt; look
+
+
+DD&lt;- look$d.full
+
+D2&lt;- DD**2
+Y&lt;- look$vgram.full
+
+lm( Y ~ D2)-&gt; out0
+lines( DD, predict( out0), col="red",lwd=1.5)
+summary(out0) # little evidence for a nugget variance.
+
+good&lt;- DD &lt;= 20 
+DD&lt;- DD[good]
+Y&lt;- look$vgram.full[good]
+
+theta&lt;- 40
+X&lt;- (1- Wendland(DD,k=2,theta=theta,dimension=2))
+lm( Y ~ X-1)-&gt; out
+lines(DD, predict( out) , col="blue", lwd=2)
+
+xt&lt;- seq( 0,50,,150)
+
+lines( xt, out$coefficient[1]*(1- Wendland(xt,k=2,theta=theta,dimension=2)),
+             col="blue", lty=2)
+
+</pre>
+</body></html>

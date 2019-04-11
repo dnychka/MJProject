@@ -1,0 +1,197 @@
+
+<!-- saved from url=(0052)http://www.image.ucar.edu/Data/MJProject/Rcode.shtml -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<!-- $Id: Rcode.shtml,v 1.1 2007/11/20 22:28:44 nychka Exp $ -->
+  
+ <title>MJ Project Data</title>
+  <link href="./RCode_files/styles.css" rel="stylesheet" type="text/css">
+  <style type="text/css">
+                <!--
+                @import url(/styles/fontsizer.css);
+                @import url(/styles/navigation.css);
+                -->
+      </style><script language="JavaScript" type="text/JavaScript">
+<!--
+
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+
+//-->
+</script>
+
+</head>
+<body>
+
+<!-- Start of IMAGe/header.html --> 
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+   <tbody><tr><!-- First row is the graphic -->
+
+      <td bgcolor="#999999" colspan="2" valign="bottom"> 
+         <a href="http://www.image.ucar.edu/"><img alt="Institute for Mathematics Applied to Geosciences (IMAGe)" border="0" src="./RCode_files/IMAGeBanner.png"></a> 
+      </td>
+   </tr>
+
+   <tr><!-- Second row is the nav bar with folder-like tabs -->
+
+      <td colspan="2" nowrap="nowrap"> 
+         <div id="headernav"> 
+            <div id="headernav_parents">
+               <a href="http://www.ucar.edu/">UCAR</a> | 
+               <a href="http://www.ncar.ucar.edu/">NCAR</a> | 
+               <a href="http://www.cisl.ucar.edu/">CISL</a> 
+            </div>
+            <ul id="header_menu">
+               <li><a href="http://www.image.ucar.edu/overview.shtml">Our Institute</a></li> 
+               <li><a href="http://www.image.ucar.edu/Research">Research     </a></li> 
+               <li><a href="http://www.image.ucar.edu/Publications">Publications </a></li> 
+               <li><a href="http://www.image.ucar.edu/Software">Software     </a></li> 
+               <li><a href="http://www.image.ucar.edu/Data">Data         </a></li> 
+            </ul>
+         </div>
+      </td>
+   </tr>
+
+   <tr><!-- Third row is an info bar with search -->
+
+      <td align="left" class="subnav" nowrap="" valign="middle">
+         <!--a class="subnav" href="/Opportunities.shtml">&nbsp;&nbsp;Opportunities</a-->
+         <a class="subnav" href="http://www.image.ucar.edu/ContactUs.shtml">Contact Us</a> | 
+         <a class="subnav" href="http://eo.ucar.edu/visit/">Visit Us</a> |
+         <a class="subnav" href="https://www.people.ucar.edu/">UCAR People Search</a>   
+      </td>
+
+      <td align="right" class="subnav" nowrap="" valign="middle">
+         <a class="subnav" href="http://www.image.ucar.edu/CMG" id="cmg">Numerics</a>|
+         <a class="subnav" href="http://www.image.ucar.edu/DAReS" id="dares">Assimilation</a>|
+         <a class="subnav" href="http://www.image.ucar.edu/TNT" id="tnt">Turbulence</a>| 
+         <a class="subnav" href="http://www.image.ucar.edu/GSP" id="gsp">Statistics</a> 
+      </td>
+
+      <!--td align="right" class="subnav" nowrap valign="top"> 
+         <form action="http://www.google.com/u/ncar" method="get" style="margin-bottom:0;">
+         <input maxlength="255" name="q" size="15" type="text"> 
+         <input name="hq" type="hidden" value="site:www.image.ucar.edu"> 
+         <input name="sa" type="submit" value="Search IMAGe"> 
+         <span class="xxsmall"> 
+         <a href="http://www.ucar.edu/ucar/search_advanced.shtml">advanced</a>&nbsp;&nbsp;
+         </span> 
+         </form>
+      </td-->
+   </tr>
+</tbody></table>
+
+<!-- Need a little space between above and what follows -->
+<br>
+
+<!-- End of IMAGe/header.html -->
+&nbsp;<br>
+
+
+
+<a name="top"> </a>
+
+<div class="indent">
+
+ 
+<img style="height: 60px;" src="./RCode_files/MJlogo.jpg" alt="" align="top"><img style="height: 100px;" src="./RCode_files/DSCN0879.jpg" alt=""><br>
+
+<h2>More detailed data analysis including Kriging using R  and
+fields</h2>
+
+
+<p>
+For all of these examples you should load the fields package and also 
+the datasets. (You only need to do this once when starting R.)
+ Fields is available as a contributed package in the 
+Comprehensive R Archive  Network <a href="http://cran.r-project.org/"> CRAN</a>
+
+</p>
+
+
+<h3> Load the fields library and the binary version of MJ data set
+</h3>
+
+
+ <pre>library(fields)
+attach("RData.riflesight.bin")<br></pre>
+
+
+      <h3> Some preliminaries: converting lon/lat grid to
+an approxmiate Euclidean grid in meters</h3>
+<p>
+Note that the perspective and image plots actually use the
+lon lat coordinates. But the Euclidean
+ transformation is used for
+surface fitting and estimating derivatives. 
+</p>
+      <pre># find spacing in meters of the lon and lat grid.<br># and scale of longitude coordinates to give equal distance<br># Because this region is so small we will ignore the curvature of<br># coordinates on sphere.<br> <br>dlat&lt;- RifleDEM$y[2]- RifleDEM$y[1]<br><br>dx&lt;- rdist.earth( cbind( RifleDEM$x[1:2],  RifleDEM$y[c(1,1)] ),<br>  miles=FALSE)[2,1] *1000<br>dy&lt;- rdist.earth( cbind( RifleDEM$x[c(1,1)],  RifleDEM$y[1:2] ) , <br>   miles=FALSE)[2,1] *1000<br><br>dlon&lt;- RifleDEM$x[2]- RifleDEM$x[1]<br>dlat&lt;- RifleDEM$y[2]- RifleDEM$y[1]<br><br># Create all the grid locations explicitly<br># converting  to a approximate cartesian grid in meters<br><br>make.surface.grid( list( x=(RifleDEM$x- RifleDEM$x[1])*dx/dlon, <br>                         y= (RifleDEM$y- RifleDEM$y[1])*dy/dlat) )-&gt; Rgrid<br><br># Rtrial is the ski run in the meter Euclidean coordinates.<br>Rtrail&lt;- cbind( <br> (rifle.trail[,1] - RifleDEM$x[1])*dx/dlon,<br> (rifle.trail[,2] - RifleDEM$y[1])*dy/dlat )<br><br># to find slopes need to parameterthe 1-d curve of the ski run <br># by arc length<br> N&lt;- nrow( rifle.trail)<br> rD&lt;- sqrt(diff( Rtrail[,1])**2 + diff( Rtrail[,2])**2)<br> trail.D&lt;- c(0,cumsum( rD))<br></pre>
+
+      <h4> Calculating a variogram of the elevations to look at
+spatial dependence</h4>
+
+See <a href="http://www.image.ucar.edu/Data/MJProject/VG.html"> VG.html </a> for some detailed source code for
+fitting the variograms to short ranges.
+
+      <pre>#First remove spatial linear drift by least squares fit before finding <br># the variogram.<br>zR&lt;- lsfit( Rgrid, c( RifleDEM$z))$residuals<br>zR&lt;- matrix( zR, ncol= ncol( RifleDEM$z), nrow= nrow( RifleDEM$z))<br><br># see help(vgram.matrix) for details on this function<br># R is set to look at all pairs within a distance of about 6.5 grid spacings<br><br>vgram.matrix( zR, R= 65, dx=dx, dy=dy) -&gt; look<br><br># A nice plot converting distance in scaled lon/lat to meters.<br><br>fields.style()<br>plot( look$d.full, look$vgram.full, xlab="Separation Distance (m)",<br>   ylab="Variogram",  xlim=c(0, 35),ylim=c(0,32), col=2)<br><br><br></pre>
+
+ <img style="width: 240px; height: 160px;" alt="" src="./RCode_files/vgram.jpg"><br>
+
+      <h4>What you have been waiting for:
+Interpolating the DEM elevations to the locations of the actual run.</h4>
+
+      <pre># Kriging with compactly supported Wendland covariance function<br># The range (theta) controls support. <br><br>theta&lt;- 30<br>lambda&lt;-0<br><br>mKrig( Rgrid, c( RifleDEM$z), cov.function="wendland.cov", k=2,<br>             theta=theta,<br>             lambda=lambda,mean.neighbor=50 )-&gt; rifle.fit<br><br>rifle.trail.elev&lt;- predict(rifle.fit, Rtrail)<br></pre>
+
+
+      <h4>Calculating the slope along the ski run two ways</h4>
+
+      <pre># computing slope based on 1-d space curve <br># and interpolating cubic spline<br>  trail.slope&lt;- splint( trail.D,rifle.trail.elev, trail.D, derivative=1)<br>  trail.degrees&lt;- - atan( trail.slope)*(360/(2*pi))<br><br># The correct way to find by slope taking partials of elevation surface<br># <br>  rifle.trail.der&lt;- predict(rifle.fit, Rtrail,derivative=1)<br><br># First find unit tangent vector along run<br>#<br> xp&lt;- splint( trail.D,rifle.trail[,1], trail.D, derivative=1)<br> yp&lt;- splint( trail.D,rifle.trail[,2], trail.D, derivative=1)<br> R&lt;- sqrt( xp**2 + yp**2)<br> xp&lt;- xp/R<br> yp&lt;- yp/R<br><br># find directional derivative based on tangent vector<br><br> trail.slope2&lt;-  xp*rifle.trail.der[,1] + yp*rifle.trail.der[,2]<br> trail.degrees2&lt;- - atan( trail.slope2)*(360/(2*pi))<br></pre>
+
+It can be checked that the two estimates of slope are very similar.
+      <pre>  matplot( trail.D, cbind(trail.degrees,trail.degrees2),<br>                      type="l", xlab="Distance (m)", <br>              ylab="Slope degrees",lwd=2, col=c(2,3),lty=1 )<br><br># Just for fun ... add in elevation drop <br>  par( usr=c(0,2000,2800,3500) )<br>  lines( trail.D, rifle.trail.elev,type="l", xlab="Distance (m)",<br>                ylab="Elevation (m)",col=4, lwd=1.5, lty=2)<br>  axis( 4)<br><br></pre>
+      <img style="width: 320px;" alt="" src="./RCode_files/slope.png">
+
+
+
+<br>
+<br>
+<h2>DISCLAIMER:</h2>
+<p>The data sets, software and related content in and linked to these pages
+   are intended for scientific and mathematical research. The authors do not
+   guarantee the correctness of the data, software or companion text.
+   Please see the UCAR Terms of Use listed below.</p>
+
+
+</div>
+
+<br>
+<p class="footer" align="center">
+<a href="http://www.ucar.edu/">UCAR</a> :
+<a href="http://www.ncar.ucar.edu/">NCAR</a> :
+<a href="http://www.cisl.ucar.edu/">CISL</a> :
+<a href="http://www.image.ucar.edu/">IMAGe</a> :&nbsp;[&nbsp;
+<a href="http://www.image.ucar.edu/CMG">CMG</a> &nbsp;
+<a href="http://www.image.ucar.edu/DAReS">DAReS</a> &nbsp;
+<a href="http://www.image.ucar.edu/GSP">GSP</a> &nbsp;
+<a href="http://www.image.ucar.edu/RISC">RISC</a> &nbsp;
+<a href="http://www.image.ucar.edu/TNT">TNT</a> &nbsp;]
+<br>
+For problems with the page, contact Tim Hoar - thoar 'at' ucar 'dot' edu
+</p>
+
+<p class="footer" align="center">
+	© 2010, UCAR | 
+	<a href="http://www.ucar.edu/legal/privacy_policy.shtml">Privacy Policy</a> | 
+	<a href="http://www.ucar.edu/legal/terms_of_use.shtml">Terms of Use</a> | 
+	<a href="http://www.ucar.edu/org/contactus.shtml">Contact UCAR</a> | <a href="http://www.eo.ucar.edu/visit/">Visit UCAR</a>  | 
+	<a href="http://www.ucar.edu/org/sponsors.shtml">Sponsored by</a> 
+	<a href="http://www.nsf.gov/"><img src="./RCode_files/nsf.gif" width="50" height="50" border="0" align="middle" alt="NSF Logo"></a>
+</p>
+
+
+
+
+
+</body></html>

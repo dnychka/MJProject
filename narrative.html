@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+
+<body>
+<h2>Narrative</h2>
+
+<a name="motivation"></a>
+<p><i>Motivation</i> These data were assembled  to explore a
+nontrivial geographic dataset in R. The challenge is to adapt spatial
+statistical methods typically for several hundred locations to the
+approximately 28K grid points for elevation. With a rigorous surface
+estimate it is easy to generate statistical estimates
+ for the derivatives of the
+elevation surface. The key to making these calculations feasable is
+to induce many zeroes in the large covariance matrices that 
+define the equations for the surface estimate.
+Here we use the compactlly supported Wendland covariance
+function to achieve this. 
+This form is similar to a thin plate spline radial basis or
+a Matern covariance function near the origin but away from zero the
+Wendland function becomes  identically zero beyond a finite range.  
+Given a covarince matrix that has  many zeroes one can use sparse matrix 
+methods to reduce the amount of calculations needed to do the linear algebra
+required for the estimate.The SPAM package,required by fields, implements these matrix methods.
+</p>
+
+<p>
+<a name="guide"></a>
+<i>Guide to run: </i> <br>
+ This run is quirky and has quite a bit of variety. It starts with a
+nearly flat trail under the SuperGauge lift. This part will give you
+time to adjust your gear and get ready for the scary parts. After
+crossing a summer service road, the terrain drops away into a nice
+bowl called Sluice Box. Traversing to skiers left there is usually a
+bit more powder and some interesting trees to negotiate. But hang a
+sharp right turn to descend into the bowl. This drop involves terrain
+with big steep bumps and most people will consider taking a few turns
+down this face to control their speed.  Stay to your left coming out
+of sluice box otherwise you will be consigned to ski Sleeper with the
+masses.  The middle part of the run is much less steep going over some
+washboards and then enters a narrow cut in the woods that was made for
+the SuperGauge lift line (Supergauge Trail).  Although not clear from
+the DEM, this trail also has slope to skiier's right along with a
+general slope down the lift line. The right side typically has deeper
+thick snow that is satisfying to plow through if you have enough
+speed.  There are one or two tight steep spots on this trail but then
+this route opens onto a wide and gently sloping area opposite the top
+of the Pony Lift. If you want to practice your bump skiing technique
+this is now a friendly environment to do it. This is also a chance to
+escape to the easier blue and green runs served by Pony.  Do this
+either right at the top of where you see the pony lift or you can ski
+a bit more of the steep part and then traverse over Rainbow Cut
+through some trees.
+<p>
+The classic way to ski the steep part of Riflesight is to swing to
+skiier's right and stop at the knoll just before the proper beginning
+of the steep Riflesight Notch pitch. 
+<p>
+<i> Here is a<a href="RifleSiteView.jpg"></a> view <img style="width:
+220px; height: 165px; float: right;" alt=""
+src="RifleSiteView.jpg">from this point provided by David Bahr that
+also shows the characteristic self organization of the bump field from
+repeated skiing. The trees in the upper left hand corner mark the gap
+leading to the Feebleminded.</i> </p>
+<p>Plan your descent through the bumps and go for it. Bump skiing does
+not get much harder than this. 
+This pitch
+is a long one and typically does not have much loose snow so technique is
+important even if you decide to traverse across to the left to lose some
+speed.  Bear to to skiier's left at teh bottom of this pitch and
+finish out the run on Feebleminded. Look for good snow on the
+sides. However you get down this run you should feel like you skiied
+something hard and a bit wild -- and done it 
+in view of all the folks comfortably sitting on the  
+SuperGauge chairs. You will not find many other black runs
+that will stretch you like Riflesight Notch. 
+
+</p>
+
+<p>
+<a name="work"></a>
+<i>Some previous work</i> <br>
+Dale Greer has assembled a nice set of
+perspective maps with slope color coding on his site
+<a href="http://3dskimaps.com/"> 3dskimaps</a>. It is an impressive effort
+and appears to leverage more conventional GIS software. The details
+for Riflesight Notch also exhibit the triple of steep portions that
+turned up in the Kriging/DEM analysis given below.
+<p>
+David Bahr in the Department of Computer Science at Regis University,
+Denver, CO has used Riflesight Notch as a study site for understanding
+how bump (also known as moguls) fields have a tendecy to self
+organization to self organize in regular rows and columns. See his <a
+href="http://academic.regis.edu/dbahr/GeneralPages/Research/MogulResearch.htm">
+site </a> for a sequence of time lapse pictures that illustrate how
+the bumps move uphill due to skiier carving. There is also a
+discussion of how this phenonema is related to self organization and
+computer science.
+
+</p>
+</body>
+</html>
